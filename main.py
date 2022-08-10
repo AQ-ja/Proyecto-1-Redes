@@ -26,4 +26,36 @@ def user_online(event):
 
         des = input("¿Que quieres hacer? : ")
 
+        if des == "1":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "2":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "3":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "4":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "5":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "6":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "7":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "8":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "9":
+            print ("Gracias por usar el shat ")
+            break
+        elif des == "10":
+            print ("Gracias por usar el shat ")
+            break
+        else:
+           print('Opcion no listada')
         
