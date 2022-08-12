@@ -27,8 +27,11 @@ def user_online(event):
         des = input("¿Que quieres hacer? : ")
 
         if des == "1":
-            print ("Gracias por usar el shat ")
-            break
+            print ("'============ Empieza el shat ============= ")
+            username = input("Ingrese el usuario: " )
+            user_pass = getpass("Ingrese la contraseña del usuario: ", username)
+            xmpp = Cliente( jid= username, password = user_pass )
+
         elif des == "2":
             print ("Gracias por usar el shat ")
             break
