@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from multiprocessing.connection import Client
 import threading
@@ -175,4 +176,284 @@ class MsgPriv(slixmpp.ClientXMPP):
                           mtype='chat')
         
         print("Tu mensaje ha sido enviado exitosamente")
+
+
+#Vemos lo de las nuevas inscripciones al server
+def new_subscribed(self, presence):
+    print(presence.get_from()+'te agrego como amigo')
+
+#============================================================================
+#Para el chat de grupo 
+
+class group(slixmpp.ClientXMPP):
+    def __init__(self, jid, password, jid_room, ak_room):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.add_event_handler("sesion_iniciada")
+        self.add_event_handler("groupchat_message", self.muc_message)
+        self.add_event_handler("muc::%s::got_online" % self.room, self.muc_online)
+        self.room = jid_room
+        self.ak = ak_room
+
+        async def start(self, event):
+            self.send_presence()
+            await self.get_roster()
+
+            try:
+                self.plugin['xep_0045'].join_muc(self.room, self.ak)
+                print("Acabas de entrar al grupo")
+            except IqError:
+                print("Ocurrio un error")
+            except IqTimeout:
+                print("Sin respuesta del server")
+            self.disconnect()
+
+
+class subscribe(slixmpp.ClientXMPP):
+    
+    def __init__(self, jid, password, to):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.add_event_handler("sesion_iniciada", self.start)
+        self.to = to
+
+    async def start(self, event):
+        self.send_presence()
+        await self.get_roster()
+        try:
+            self.send_presence_subscription(pto=self.to)        
+        except IqTimeout:
+            print("Timeout") 
+        self.disconnect()
+                
+
+class GetRooster(slixmpp.ClientXMPP):
+    def __init__(self, jid, password, user_search = None):
+        slixmpp.ClienteXMPP.__init__(self, jid, password)
+        self.roster = {}
+        self.user_search = user_search
+
+        self.add_event_handler('sesion_iniciada', self.start)
+        self.add_event_handler('changed_status', self.wait_for_presences)
+        self.add_event_handler('desconnected', self.got_diss)
+
+        self.register_plugin('xep_0030')
+        self.register_plugin('xep_0199')
+        self.register_plugin('xep_0045')
+        self.register_plugin('xep_0096')
+
+        self.received = set()
+        self.precense_received = asyncio.Event()
+
+    def got_diss(self, event):
+        print('Se ha desconectado')
+        quit()
+
+    async def start(self, event):
+        try:
+            await self.get_roster()
+        except IqError as err:
+            print('Error: %s' % err.iq['error']['condition'])
+        except IqTimeout:
+            print('Timeout del server')
+        self.send_presence()
+
+        print('Esperando actualizaciones...')
+        await asyncio.sleep(5)
+
+        print('El roster de %s es:' % self.boundjid.bare)
+        groups = self.client_roster.groups()
+        for group in groups:
+            for jid in groups[group]:
+                status = ''
+                show = ''
+                sub = ''
+                name = ''
+                sub = self.client_roster[jid]['subscription']
+                conexion = self.client_roster.presence(jid)
+                name = self.client_roster[jid]['name']
+                for answer, pres in conexion.items():
+                    if pres['show']:
+                        show = pres['show']
+                    if pres['status']:
+                        status = pres['status']
+                self.roster[jid] = User(jid, show, status, sub, name)
+
+
+        if(not self.u_search):
+            if len(self.roster) == 0:
+                print('No hay usuarios agregados')
+            else:
+                for key in self.roster.keys():
+                    friend = self.roster[key]
+                    print('- Jid: '+friend.jid+' Username:'+friend.username+' Show:'+friend.show+' Status:'+friend.status+' Subscription:'+friend.subscription)
+
+ 
+        else:
+            if self.u_search in self.roster.keys():
+                user = self.roster[self.u_search]
+                print('- Jid: '+user.jid+' Username:'+user.username+' Show:'+user.show+' Status:'+user.status+' Subscription:'+user.subscription)
+            else:
+                print('Usuario no encontrado')
         
+
+        await asyncio.sleep(5)
+        self.disconnect()
+
+    def wait_for_presences(self, pres):
+        self.received.add(pres['from'].bare)
+        if len(self.received) >= len(self.client_roster.keys()):
+            self.presences_received.set()
+        else:
+            self.presences_received.clear()
+
+
+#para comodidad xd
+# ------------------------
+class User():
+    def __init__(self, jid, show, status, subscription, username):
+        self.jid = jid
+        self.show = show
+        self.status = status
+        self.subscription = subscription
+        self.username = username
+
+class SendFile(slixmpp.ClientXMPP):
+    
+    def __init__(self, jid, password, receiver, filename):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.receiver = receiver    
+        self.file = open(filename, 'rb')
+        self.domain = domain
+        
+    
+        self.add_event_handler("sesion_iniciada", self.start)
+        self.register_plugin('xep_0066')
+        self.register_plugin('xep_0071')
+        self.register_plugin('xep_0128')
+        self.register_plugin('xep_0363')
+
+    
+    async def start(self, event):
+        try:
+    
+            proxy = await self['xep_0363'].handshake(self.receiver)
+            while True:
+                data = self.file.read(1048576)
+                if not data:
+                    break
+                await proxy.write(data)
+            proxy.transport.write_eof()
+    
+        except (IqError, IqTimeout) as e:
+            print("Error detectado")
+        else:
+            print("Si se logro hacer el envio")
+        finally:
+    
+    
+            self.file.close()
+    
+            self.disconnect()
+
+
+
+# ===============================================================
+# Para la parte de los grupos, que sigan las funciones :)
+# ===============================================================
+
+class create_gruop(slixmpp.ClientXMPP):
+    def __init__(self, jid, password, room, alias):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.add_event_handler('sesion_iniciada', self.start)
+        self.register_plugin('xep_0030')
+        self.register_plugin('xep_0199')
+        self.register_plugin('xep_0045')
+        self.register_plugin('xep_0096')
+        
+        self.room = room
+        self.alias = alias
+
+    async def start(self, event):
+        await self.get_roster()
+        self.send_presence()
+
+        status = 'open'
+        self.plugin['xep_0045'].join_muc(
+            self.room,
+            self.alias,
+            pstatus = status, 
+            pfrom = self.boundjid.full
+        )
+
+        await self.plugin['xep_0045'].set_affiliation(self.room, jid = self.boundjid.full, affiliation = 'owner')
+        print("Se acaba crear el grupo")
+        self.disconnect()
+        quit()
+
+class unirse_grupo(slixmpp.ClientXMPP):
+    def __init__(self, jid, password, room, alias):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.add_event_handler('session_start', self.start)
+        self.register_plugin('xep_0030')
+        self.register_plugin('xep_0199')
+        self.register_plugin('xep_0045')
+        self.register_plugin('xep_0096')
+        self.room = room
+        self.alias = alias
+
+    async def start(self, start):
+        await self.get_roster()
+        self.send_presence()
+        status = 'open'
+        self.plugin['xep_0045'].join_muc(
+            self.room,
+            self.alias,
+            pstatus=status,
+            pfrom=self.boundjid.full
+        )
+        self.disconnect()
+        quit()
+
+
+class salir_grupo(slixmpp.ClientXMPP):
+    def __init__(self, jid, password, room, alias):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.add_event_handler('session_start', self.start)
+        self.register_plugin('xep_0030')
+        self.register_plugin('xep_0199')
+        self.register_plugin('xep_0045')
+        self.register_plugin('xep_0096')
+        self.room = room
+        self.alias = alias
+
+    async def start(self, event):
+        await self.get_roster()
+        self.send_presence()
+        print('AQUI')
+        await self.plugin['xep_0045'].leave_muc(self.room, self.alias)
+        print('AQUI')
+        self.disconnect()
+        quit()        
+
+
+class Msg_group(slixmpp.ClientXMPP):
+    def __init__(self, jid, password, room, msg):
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.add_event_handler('session_start', self.start)
+        self.register_plugin('xep_0030')
+        self.register_plugin('xep_0199')
+        self.register_plugin('xep_0045')
+        self.register_plugin('xep_0096')
+        self.room = room
+        self.msg = msg
+
+    async def start(self, event):
+        await self.get_roster()
+        self.send_presence()
+
+        self.send_message(
+            mto=self.room,
+            mbody=self.msg,
+            mtype='groupchat',
+            mfrom=self.boundjid.full
+        )
+        print('SI SE ENVIOOOOOOOOOOOOOOOOO') 
