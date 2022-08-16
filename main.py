@@ -115,17 +115,6 @@ if __name__ == '__main__':
                 xmpp.process(forever=False)
 
 
-
-            if opti2 == '4':
-                to = input('Ingrese el destinatario: ')
-                msg = input('Ingrese el mensaje: ')
-                client = SendMsg( args.jid, args.password, to, msg)
-                client.register_plugin('xep_0030')  # Service Discovery
-                client.register_plugin('xep_0199')  # XMPP Ping
-                client.connect()
-                client.process(forever=False)
-
-            """
             if opti2 == '4':
                 recipient = input("Ingresa el user al que le quieres enviar el mensaje: ") 
                 message = input("Ingresa el mensaje... ")
@@ -136,7 +125,6 @@ if __name__ == '__main__':
                 xmpp.connect()
                 xmpp.process(forever=False)
                 print("Se envia el mensaje")
-            """
 
             if opti2 == '5':
                 room = input("Ingresa el nombre del room... ") 
