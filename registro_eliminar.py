@@ -1,14 +1,14 @@
-import xmpp
+import asyncio
 import slixmpp
+import xmpp
 from slixmpp.exceptions import IqError, IqTimeout
 from slixmpp.xmlstream.stanzabase import ET, ElementBase 
-from getpass import getpass
-from argparse import ArgumentParser
+
 
 # Creacion de usuario
-def createUser():
+def createUser(jid, password):
 		print(' ')
-		print('Ingresa el usuario con el que te deseas registrar: ')
+		print('Ingresa el usuario con el que te deseas registrar ')
 		new_user = input('username@alumchat.fun:  ')
 		new_password = input('password:  ')
 		user = new_user
@@ -27,6 +27,7 @@ def createUser():
 
 # Clase para eliminacion de un usuario
 class Eliminar(slixmpp.ClientXMPP):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     def __init__(self, jid, password, show, status):
         slixmpp.ClientXMPP.__init__(self, jid, password)
         self.user = jid
