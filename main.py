@@ -6,11 +6,10 @@ from slixmpp.xmlstream.stanzabase import ET, ElementBase
 from getpass import getpass
 from argparse import ArgumentParser
 
-
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 #importar las clases y funciones:
-from cliente2 import *
 from cliente import *
 from grupo_ycosas import *
 from lista_contactos import *
@@ -88,8 +87,10 @@ if __name__ == '__main__':
                 xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
                 xmpp.register_plugin('xep_0096') # Jabber Search
                 xmpp.register_plugin('xep_0085') # Chat State Notifications
+                print("Empieza pero, terminara?...")
                 xmpp.connect()
                 xmpp.process(forever=False)
+                print("Ejecucion completa")
 
 
             if opti2 == '2':
@@ -100,8 +101,10 @@ if __name__ == '__main__':
                 xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
                 xmpp.register_plugin('xep_0096') # Jabber Search
                 xmpp.register_plugin('xep_0085') # Chat State Notifications
+                print("Empieza pero, terminara?...")
                 xmpp.connect()
                 xmpp.process(forever=False)
+                print("Ejecucion completa")
 
             if opti2 == '3':
                 contact = input("Ingresa el usuario: ") 
@@ -111,8 +114,10 @@ if __name__ == '__main__':
                 xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
                 xmpp.register_plugin('xep_0096') # Jabber Search
                 xmpp.register_plugin('xep_0085') # Chat State Notifications
+                print("Empieza pero, terminara?...")
                 xmpp.connect()
                 xmpp.process(forever=False)
+                print("Ejecucion completa")
 
 
             if opti2 == '4':
@@ -121,7 +126,7 @@ if __name__ == '__main__':
                 xmpp = Client(args.jid, args.password, recipient, message, posible_status[args.show], args.status)
                 xmpp.register_plugin('xep_0030') # Service Discovery
                 xmpp.register_plugin('xep_0199') # XMPP Ping
-                print("hasta aca bien")
+                print("Empieza pero, terminara?...")
                 xmpp.connect()
                 xmpp.process(forever=False)
                 print("Se envia el mensaje")
@@ -136,8 +141,11 @@ if __name__ == '__main__':
                     xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
                     xmpp.register_plugin('xep_0096') # Jabber Search
                     xmpp.register_plugin('xep_0085') # Chat State Notifications
+                    print("Empieza pero, terminara?...")
                     xmpp.connect()
                     xmpp.process(forever=False)
+                    print("Ejecucion completa")
+                    
 
             if opti2 == '6':
                 m_presencia = input("Ingresa el mensaje... ")
@@ -147,8 +155,10 @@ if __name__ == '__main__':
                 xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
                 xmpp.register_plugin('xep_0096') # Jabber Search
                 xmpp.register_plugin('xep_0085') # Chat State Notifications
+                print("Empieza pero, terminara?...")
                 xmpp.connect()
                 xmpp.process(forever=False)
+                print("Ejecucion completa")
 
             if opti2 == '7':
                 print("Funcion de notificaciones disponible para la siguiente actualizacion :) ")

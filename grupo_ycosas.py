@@ -5,6 +5,7 @@ import threading
 import slixmpp
 from slixmpp.exceptions import IqError, IqTimeout
 
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 class Chatgrupo(slixmpp.ClientXMPP):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

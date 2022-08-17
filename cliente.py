@@ -7,6 +7,8 @@ from slixmpp.xmlstream.stanzabase import ET, ElementBase
 from getpass import getpass
 from argparse import ArgumentParser
 
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 
 """ 
 Referenicas: 
@@ -22,7 +24,7 @@ https://lab.louiz.org/poezio/slixmpp/-/blob/master/examples/register_account.py
 
 #Clase para los MD
 class Client(slixmpp.ClientXMPP):
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    
     def __init__(self, jid, password, recipient, message, show, status):
         slixmpp.ClientXMPP.__init__(self, jid, password)
         self.recipient = recipient
@@ -33,8 +35,6 @@ class Client(slixmpp.ClientXMPP):
         self.add_event_handler("message", self.message)
         self.add_event_handler("chatstate_active", self.status_active)
         self.add_event_handler("chatstate_inactive", self.status_inactive)
-        xmpp.connect()
-        xmpp.process(forever=False)
 
     async def start(self, event):
         self.send_presence(self.show, self.stat)

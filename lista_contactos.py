@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import threading
 import slixmpp
@@ -5,6 +6,7 @@ import base64, time
 from slixmpp.exceptions import IqError, IqTimeout
 from slixmpp.xmlstream.stanzabase import ET, ElementBase 
 
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 class Rooster(slixmpp.ClientXMPP):
     def __init__(self, jid, password, show1, status, user=None, show=True, message=""):
