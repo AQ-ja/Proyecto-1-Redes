@@ -4,7 +4,7 @@ import xmpp
 from slixmpp.exceptions import IqError, IqTimeout
 from slixmpp.xmlstream.stanzabase import ET, ElementBase 
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 
 # Creacion de usuario
 def createUser(jid, password):
@@ -28,7 +28,7 @@ def createUser(jid, password):
 
 # Clase para eliminacion de un usuario
 class Eliminar(slixmpp.ClientXMPP):
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     def __init__(self, jid, password, show, status):
         slixmpp.ClientXMPP.__init__(self, jid, password)
         self.user = jid

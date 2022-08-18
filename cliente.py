@@ -7,7 +7,7 @@ from slixmpp.xmlstream.stanzabase import ET, ElementBase
 from getpass import getpass
 from argparse import ArgumentParser
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 
 
 """ 

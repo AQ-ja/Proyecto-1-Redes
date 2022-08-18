@@ -81,83 +81,70 @@ if __name__ == '__main__':
             
 
             if opti2 == '1':
-                xmpp = Rooster(args.jid, args.password, posible_status[args.show], args.status)
-                xmpp.register_plugin('xep_0030') # Service Discovery
-                xmpp.register_plugin('xep_0199') # XMPP Ping
-                xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
-                xmpp.register_plugin('xep_0096') # Jabber Search
-                xmpp.register_plugin('xep_0085') # Chat State Notifications
+                cliente = Rooster(args.jid, args.password)
+                cliente.register_plugin('xep_0030')  # Service Discovery
+                cliente.register_plugin('xep_0199')  # XMPP Pin
                 print("Empieza pero, terminara?...")
-                xmpp.connect()
-                xmpp.process(forever=False)
+                cliente.connect()
+                cliente.process(forever=False)
                 print("Ejecucion completa")
 
 
             if opti2 == '2':
-                contact = input("Ingresa el username completo del que quieres que sea tu amigo:  ") 
-                xmpp = AddRoster(args.jid, args.password, posible_status[args.show], args.status, contact)
-                xmpp.register_plugin('xep_0030') # Service Discovery
-                xmpp.register_plugin('xep_0199') # XMPP Ping
-                xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
-                xmpp.register_plugin('xep_0096') # Jabber Search
-                xmpp.register_plugin('xep_0085') # Chat State Notifications
+                print('Agregando nuevo contacto')
+                name = input('Ingrese el nombre: ')
+                cliente = AddFriend(args.jid, args.password, name)
+                cliente.register_plugin('xep_0030')  # Service Discovery
+                cliente.register_plugin('xep_0199')  # XMPP Ping
+                cliente.register_plugin('xep_0077')  # In-Band Registration
+                cliente.register_plugin('xep_0100')
                 print("Empieza pero, terminara?...")
-                xmpp.connect()
-                xmpp.process(forever=False)
+                cliente.connect()
+                cliente.process(forever=False)
                 print("Ejecucion completa")
 
             if opti2 == '3':
-                contact = input("Ingresa el usuario: ") 
-                xmpp = Rooster(args.jid, args.password, posible_status[args.show], args.status, contact)
-                xmpp.register_plugin('xep_0030') # Service Discovery
-                xmpp.register_plugin('xep_0199') # XMPP Ping
-                xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
-                xmpp.register_plugin('xep_0096') # Jabber Search
-                xmpp.register_plugin('xep_0085') # Chat State Notifications
+                contact = input('Ingrese el nombre del contacto: ')
+                cliente = GetInfo(args.jid, args.password, contact)
                 print("Empieza pero, terminara?...")
-                xmpp.connect()
-                xmpp.process(forever=False)
+                cliente.connect()
+                cliente.process(forever=False)
                 print("Ejecucion completa")
 
 
             if opti2 == '4':
                 recipient = input("Ingresa el user al que le quieres enviar el mensaje: ") 
                 message = input("Ingresa el mensaje... ")
-                xmpp = Client(args.jid, args.password, recipient, message, posible_status[args.show], args.status)
-                xmpp.register_plugin('xep_0030') # Service Discovery
-                xmpp.register_plugin('xep_0199') # XMPP Ping
+                meg = Client(args.jid, args.password, recipient, message, posible_status[args.show], args.status)
+                meg.register_plugin('xep_0030') # Service Discovery
+                meg.register_plugin('xep_0199') # XMPP Ping
                 print("Empieza pero, terminara?...")
-                xmpp.connect()
-                xmpp.process(forever=False)
+                meg.connect()
+                meg.process(forever=False)
                 print("Se envia el mensaje")
 
             if opti2 == '5':
                 room = input("Ingresa el nombre del room... ") 
                 nick = input("¿Que nick deseas usar? ")
                 if '@conference.alumchat.fun' in room:
-                    xmpp = Chatgrupo(args.jid, args.password, room, nick)
-                    xmpp.register_plugin('xep_0030') # Service Discovery
-                    xmpp.register_plugin('xep_0199') # XMPP Ping
-                    xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
-                    xmpp.register_plugin('xep_0096') # Jabber Search
-                    xmpp.register_plugin('xep_0085') # Chat State Notifications
+                    cliente = Chatgrupo(args.jid, args.password, room, nick)
+                    cliente.register_plugin('xep_0030') # Service Discovery
+                    cliente.register_plugin('xep_0199') # XMPP Ping
+                    cliente.register_plugin('xep_0045') # Mulit-User Chat (MUC)
                     print("Empieza pero, terminara?...")
-                    xmpp.connect()
-                    xmpp.process(forever=False)
+                    cliente.connect()
+                    cliente.process(forever=False)
                     print("Ejecucion completa")
                     
 
             if opti2 == '6':
                 m_presencia = input("Ingresa el mensaje... ")
-                xmpp = Rooster(args.jid, args.password, posible_status[args.show], args.status, show=False, message=m_presencia)
-                xmpp.register_plugin('xep_0030') # Service Discovery
-                xmpp.register_plugin('xep_0199') # XMPP Ping
-                xmpp.register_plugin('xep_0045') # Mulit-User Chat (MUC)
-                xmpp.register_plugin('xep_0096') # Jabber Search
-                xmpp.register_plugin('xep_0085') # Chat State Notifications
+                cliente = Rooster(args.jid, args.password, message=m_presencia)
+                cliente.register_plugin('xep_0030') # Service Discovery
+                cliente.register_plugin('xep_0199') # XMPP Ping
                 print("Empieza pero, terminara?...")
-                xmpp.connect()
-                xmpp.process(forever=False)
+                cliente.connect()
+                cliente.process(forever=False)
                 print("Ejecucion completa")
 
             if opti2 == '7':

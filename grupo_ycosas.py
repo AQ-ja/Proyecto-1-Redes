@@ -5,10 +5,10 @@ import threading
 import slixmpp
 from slixmpp.exceptions import IqError, IqTimeout
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 
 class Chatgrupo(slixmpp.ClientXMPP):
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     def __init__(self, jid, password, room, nick):
         slixmpp.ClientXMPP.__init__(self, jid, password)
         self.jid = jid
@@ -32,8 +32,8 @@ class Chatgrupo(slixmpp.ClientXMPP):
     def muc_message(self, msg):
         if(str(msg['from']).split('/')[1] != self.nick):
             print(str(msg['from']).split('/')[1] + " >> " + msg['body'])
-            message = input("Escribe <<back>> si deseas regresar  \n Mensaje... ")
-            if message == "back":
+            message = input("Escribe <<volver>> si deseas regresar  \n Mensaje... ")
+            if message == "volver":
                 self.plugin['xep_0045'].leave_muc(self.room, self.nick)
                 self.disconnect()
             else:
